@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>  
+    <style>  
+        body {  
+            text-align: center;  
+        }  
+        .jtp {  
+            font-size: 40px;  
+            font-weight: bold;  
+            color: red;  
+        }  
+    </style>  
+    <script>  
+        let brickSize = 25;  
+        let total_row = 17;  
+        let total_col = 17;  
+        let board;  
+        let context;  
+          
+        let snakeA = brickSize * 5;  
+        let snakeB = brickSize * 5;  
+          
+        let speedA = 0;  
+        let speedB = 0;  
+          
+        let serpentBody = [];  
+          
+        let breadA;  
+        let breadB;  
+          
+        let gameOver = false;  
+          
+        window.onload = function () {  
+            board = document.getElementById("board");  
+            board.height = total_row * brickSize;  
+            board.width = total_col * brickSize;  
+            context = board.getContext("2d");  
+          
+            placeBread();  
+            document.addEventListener("keyup", changeDirection);  
+            setInterval(update, 1000 / 10);  
+        }  
+        function update() {  
+            if (gameOver) {  
+                return;  
+            }  
+            context.fillStyle = "red";  
+            context.fillRect(0, 0, board.width, board.height);  
+          
+            context.fillStyle = "black";  
+            context.fillRect(breadA, breadB, brickSize, brickSize);  
+          
+            if (snakeA == breadA && snakeB == breadB  
+            ) {  
+                serpentBody.push([breadA, breadB  
+            ]);  
+                placeBread();  
+            }  
+            for (let i = serpentBody.length - 1; i > 0; i--) {  
+                serpentBody[i] = serpentBody[i - 1];  
+            }  
+            if (serpentBody.length) {  
+                serpentBody[0] = [snakeA, snakeB];  
+            }  
+            context.fillStyle = "white";  
+            snakeA += speedA * brickSize;   
+            snakeB += speedB * brickSize;   
+            context.fillRect(snakeA, snakeB, brickSize, brickSize);  
+            for (let i = 0; i < serpentBody.length; i++) {  
+                context.fillRect(serpentBody[i][0], serpentBody[i][1], brickSize, brickSize);  
+            }  
+            if (snakeA < 0   
+                || snakeA > total_col * brickSize   
+                || snakeB < 0   
+                || snakeB > total_row * brickSize) {   
+                  
+                gameOver = true;  
+                alert("Game Over");  
+            }    
+            for (let i = 0; i < serpentBody.length; i++) {  
+                if (snakeA == serpentBody[i][0] && snakeB == serpentBody[i][1]) {                   
+                    gameOver = true;  
+                    alert("Game Over");  
+                }  
+            }  
+        }         
+        function changeDirection(e) {  
+            if (e.code == "ArrowUp" && speedB != 1) {   
+                speedA = 0;  
+                speedB = -1;  
+            }  
+            else if (e.code == "ArrowDown" && speedB != -1) {  
+                speedA = 0;  
+                speedB = 1;  
+            }  
+            else if (e.code == "ArrowLeft" && speedA != 1) {  
+                speedA = -1;  
+                speedB = 0;  
+            }  
+            else if (e.code == "ArrowRight" && speedA != -1) {   
+                speedA = 1;  
+                speedB = 0;  
+            }  
+        }      
+        function placeBread() {  
+          
+            breadA = Math.floor(Math.random() * total_col) * brickSize;   
+              
+            breadB  
+             = Math.floor(Math.random() * total_row) * brickSize;   
+        }  
+    </script>  
+</head>  
+<body>  
+    <h1>Snake Game</h1>  
+    <canvas id="board"></canvas>  
+</body>  
+</html>  
